@@ -34,8 +34,7 @@ const SignupPage = () => {
     const newUser: User = { username, email, password };
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('authToken', 'fake-jwt-token'); // Simulate JWT token
-    navigate('/home');
+    navigate('/login'); // Redirect to login page after successful signup
   };
 
   return (
