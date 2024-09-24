@@ -232,16 +232,16 @@ export default function Home() {
                 onMouseOut={stopDrawing}
             />
 
-            {latexExpression && latexExpression.map((latex, index) => (
-                <Draggable
-                    key={index}
-                    defaultPosition={latexPosition}
-                    onStop={(e, data) => setLatexPosition({ x: data.x, y: data.y })}
-                >
-                    <div className="absolute p-2 text-white rounded shadow-md">
-                        <div className="latex-content">{latex}</div>
-                    </div>
-                </Draggable>
+{latexExpression.map((latex, index) => (
+        <Draggable
+          key={index}
+          defaultPosition={latexPosition}
+          onStop={(_, data) => setLatexPosition({ x: data.x, y: data.y })} // Remove 'e' if not used
+        >
+          <div className="absolute p-2 text-white rounded shadow-md">
+            <div className="latex-content">{latex}</div>
+          </div>
+        </Draggable>
             ))}
         </>
     );

@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
+interface User {
+  username: string;
+  email: string;
+  password: string;
+}
 
 const SignupPage = () => {
   const [username, setUsername] = useState('');
@@ -9,37 +15,27 @@ const SignupPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
-    try {
-      const response = await fetch('/api/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, email, password }),
-      });
+    const users: User[] = JSON.parse(localStorage.getItem('users') || '[]');
+    const userExists = users.some((user: User) => user.email === email);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Signup failed');
-      }
-
-      const data = await response.json();
-      localStorage.setItem('authToken', data.token);
-      navigate('/');
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError('An unknown error occurred');
-      }
+    if (userExists) {
+      setError('User already exists');
+      return;
     }
+
+    const newUser: User = { username, email, password };
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('authToken', 'fake-jwt-token'); // Simulate JWT token
+    navigate('/home');
   };
 
   return (
@@ -94,11 +90,14 @@ const SignupPage = () => {
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
+            className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Sign Up
           </button>
         </form>
+        <p className="mt-4 text-center">
+          Already have an account? <Link to="/login" className="text-blue-600 hover:underline">Log in</Link>
+        </p>
       </div>
     </div>
   );
