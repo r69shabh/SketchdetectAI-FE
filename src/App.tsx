@@ -3,15 +3,16 @@ import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
 
 import Home from '@/screens/home';
-import LoginPage from '@/screens/auth/loginpage';
-import SignupPage from '@/screens/auth/SignUpPage';
+import LoginPage from '@/screens/auth/LoginPage';
+import SignupPage from '@/screens/auth/SignupPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 import '@/index.css';
 
 const paths = [
   {
     path: '/',
-    element: <Home />,
+    element: <LoginPage />,
   },
   {
     path: '/login',
@@ -20,6 +21,14 @@ const paths = [
   {
     path: '/signup',
     element: <SignupPage />,
+  },
+  {
+    path: '/home',
+    element: (
+      <ProtectedRoute>
+        <Home />
+      </ProtectedRoute>
+    ),
   },
 ];
 

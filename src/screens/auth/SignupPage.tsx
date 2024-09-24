@@ -30,9 +30,9 @@ const SignupPage = () => {
         throw new Error(errorData.error || 'Signup failed');
       }
 
-      await response.json();
-      alert('Signup successful');
-      navigate('/login');
+      const data = await response.json();
+      localStorage.setItem('authToken', data.token);
+      navigate('/');
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);

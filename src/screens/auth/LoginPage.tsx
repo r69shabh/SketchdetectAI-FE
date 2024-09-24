@@ -1,38 +1,37 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
+interface User {
+  username: string;
+  email: string;
+  password: string;
+}
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    const loginData = { email, password };
+    const users: User[] = JSON.parse(localStorage.getItem('users') || '[]');
+    const user = users.find((user: User) => user.email === email && user.password === password);
 
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-
-      const data = await response.json();
-      console.log('Login successful', data);
-    } catch (error) {
-      console.error('Error:', error);
+    if (!user) {
+      setError('Invalid email or password');
+      return;
     }
+
+    localStorage.setItem('authToken', 'fake-jwt-token'); // Simulate JWT token
+    navigate('/home');
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 text-black dark:text-white">
       <div className="p-8 rounded-lg shadow-lg w-full max-w-md bg-gray-100 dark:bg-gray-800">
         <h1 className="text-3xl font-bold mb-6 text-center">Log In</h1>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
