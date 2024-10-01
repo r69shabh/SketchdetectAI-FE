@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Draggable from 'react-draggable';
 import {SWATCHES} from '@/constants';
-import { useNavigate } from 'react-router-dom';
 // import {LazyBrush} from 'lazy-brush';
 
 interface GeneratedResult {
@@ -19,7 +18,6 @@ interface Response {
 }
 
 export default function Home() {
-    const navigate = useNavigate();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isDrawing, setIsDrawing] = useState(false);
     const [color, setColor] = useState('rgb(255, 255, 255)');
@@ -103,7 +101,6 @@ export default function Home() {
         }
     };
 
-
     const resetCanvas = () => {
         const canvas = canvasRef.current;
         if (canvas) {
@@ -142,16 +139,13 @@ export default function Home() {
     };
     const stopDrawing = () => {
         setIsDrawing(false);
-    };
-
-    const handleLogout = () => {
-        navigate('/');
-      };
+    };  
 
     const runRoute = async () => {
         const canvas = canvasRef.current;
     
         if (canvas) {
+            console.log('Running route..'+ `${import.meta.env.VITE_API_URL}/calculate`);
             const response = await axios({
                 method: 'post',
                 url: `${import.meta.env.VITE_API_URL}/calculate`,
@@ -227,25 +221,7 @@ export default function Home() {
                 >
                     Run
                 </Button>
-      <button
-        onClick={handleLogout}
-        className="py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 mb-4"
-      >
-        Logout
-      </button>
-            
-      {latexExpression.map((latex, index) => (
-        <Draggable
-          key={index}
-          defaultPosition={latexPosition}
-          onStop={(_, data) => setLatexPosition({ x: data.x, y: data.y })}
-        >
-          <div className="absolute p-2 text-white rounded shadow-md">
-            <div className="latex-content">{latex}</div>
-          </div>
-        </Draggable>
-      ))}
-    </div>
+            </div>
             <canvas
                 ref={canvasRef}
                 id='canvas'
@@ -256,16 +232,16 @@ export default function Home() {
                 onMouseOut={stopDrawing}
             />
 
-{latexExpression.map((latex, index) => (
-        <Draggable
-          key={index}
-          defaultPosition={latexPosition}
-          onStop={(_, data) => setLatexPosition({ x: data.x, y: data.y })} // Remove 'e' if not used
-        >
-          <div className="absolute p-2 text-white rounded shadow-md">
-            <div className="latex-content">{latex}</div>
-          </div>
-        </Draggable>
+            {latexExpression && latexExpression.map((latex, index) => (
+                <Draggable
+                    key={index}
+                    defaultPosition={latexPosition}
+                    onStop={(e, data) => setLatexPosition({ x: data.x, y: data.y })}
+                >
+                    <div className="absolute p-2 text-white rounded shadow-md">
+                        <div className="latex-content">{latex}</div>
+                    </div>
+                </Draggable>
             ))}
         </>
     );

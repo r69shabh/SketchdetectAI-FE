@@ -1,7 +1,7 @@
+// src/components/ProtectedRoute.tsx
 import { Navigate } from 'react-router-dom';
 
 const isAuthenticated = () => {
-  // Check for the simulated JWT token in local storage
   return !!localStorage.getItem('authToken');
 };
 
