@@ -88,9 +88,11 @@ export default function Home() {
     }, []);
 
     const renderLatexToCanvas = (expression: string, answer: string) => {
-        const latex = `\\(\\LARGE{${expression} = ${answer}}\\)`;
+        // Add spaces between words in the expression
+        const spacedExpression = expression.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([a-zA-Z])(\d)/g, '$1 $2').replace(/(\d)([a-zA-Z])/g, '$1 $2');
+        const latex = `\\(\\LARGE{${spacedExpression} = ${answer}}\\)`;
         setLatexExpression([...latexExpression, latex]);
-
+    
         // Clear the main canvas
         const canvas = canvasRef.current;
         if (canvas) {
